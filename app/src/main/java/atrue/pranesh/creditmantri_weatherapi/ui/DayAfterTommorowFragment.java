@@ -1,6 +1,5 @@
 package atrue.pranesh.creditmantri_weatherapi.ui;
 
-
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -12,14 +11,13 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import atrue.pranesh.creditmantri_weatherapi.R;
-import atrue.pranesh.creditmantri_weatherapi.model.CityWeather;
 
 /**
- * Created by Adminitrator on 4/9/2018.
+ * Created by Adminitrator on 4/10/2018.
  * Copyright IMDSTAR Technologies
  */
 
-public class FutureWeatherFragment extends Fragment {
+public class DayAfterTommorowFragment extends Fragment {
     RecyclerView recyclerView;
     ProgressBar progress;
     Communicator communicator;
@@ -38,7 +36,6 @@ public class FutureWeatherFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         communicator = (Communicator) getActivity();
     }
-
     public void showData(Bundle bundle) {
     }
 }

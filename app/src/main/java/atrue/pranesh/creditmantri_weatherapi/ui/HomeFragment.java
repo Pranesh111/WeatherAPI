@@ -2,9 +2,11 @@ package atrue.pranesh.creditmantri_weatherapi.ui;
 
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
@@ -16,22 +18,26 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
+import android.widget.TextView;
+
 import java.util.ArrayList;
-import java.util.List;
 
 import atrue.pranesh.creditmantri_weatherapi.R;
 import atrue.pranesh.creditmantri_weatherapi.model.CityWeather;
+import atrue.pranesh.creditmantri_weatherapi.network.ApiClient;
+import atrue.pranesh.creditmantri_weatherapi.network.ApiInterface;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
-public class HomeFragment extends Fragment implements TabLayout.OnTabSelectedListener{
+public class HomeFragment extends Fragment implements TabLayout.OnTabSelectedListener {
     ViewPager viewPager;
     TabLayout tabLayout;
-    ProgressBar progress;
     CoordinatorLayout coordinatorLayout;
-    private List<CityWeather> longTermWeather = new ArrayList<>();
-    private List<CityWeather> longTermTodayWeather = new ArrayList<>();
-    private List<CityWeather> longTermTomorrowWeather = new ArrayList<>();
     private WeatherAdapter adapter;
+    TextView txtMain, txtDesc, txtMax, txtMin, txtPres, txtHumi;
+    String apiKey;
+    String city;
 
     @Nullable
     @Override
@@ -46,7 +52,14 @@ public class HomeFragment extends Fragment implements TabLayout.OnTabSelectedLis
         coordinatorLayout = view.findViewById(R.id.coordinatorLayout);
         viewPager = view.findViewById(R.id.viewPager);
         tabLayout = view.findViewById(R.id.tabLayout);
-        progress = view.findViewById(R.id.progress);
+
+        txtMain = view.findViewById(R.id.txtMain);
+        txtDesc = view.findViewById(R.id.txtDesc);
+        txtMax = view.findViewById(R.id.txtMax);
+        txtMin = view.findViewById(R.id.txtMin);
+        txtPres = view.findViewById(R.id.txtPres);
+        txtHumi = view.findViewById(R.id.txtHumi);
+
 
         tabLayout.addTab(tabLayout.newTab().setText("Today1"));
         tabLayout.addTab(tabLayout.newTab().setText("Today2"));
@@ -54,12 +67,35 @@ public class HomeFragment extends Fragment implements TabLayout.OnTabSelectedLis
 
         tabLayout.addOnTabSelectedListener(this);
         adapter = new WeatherAdapter(getFragmentManager(), tabLayout.getTabCount());
-        adapter.addFragments(new TodayFragment());
+        adapter.addFragments(new TomorrowFragment());
         adapter.addFragments(new TomorrowFragment());
         adapter.addFragments(new FutureWeatherFragment());
 
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+
+        apiKey = sp.getString("apiKey", getActivity().getResources().getString(R.string.apiKey));
+        city = sp.getString("city", "Mumbai");
+
+        callTodayReport();
+    }
+
+    private void callTodayReport() {
+        ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+        Call<CityWeather> weatherCall = apiInterface.getWeather(city, apiKey);
+        weatherCall.enqueue(new Callback<CityWeather>() {
+            @Override
+            public void onResponse(Call<CityWeather> call, Response<CityWeather> response) {
+                CityWeather cityWeather = response.body();
+                showData(cityWeather);
+            }
+
+            @Override
+            public void onFailure(Call<CityWeather> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
     }
 
 
@@ -88,13 +124,16 @@ public class HomeFragment extends Fragment implements TabLayout.OnTabSelectedLis
     public void onTabReselected(TabLayout.Tab tab) {
 
     }
+
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
+
     private class WeatherAdapter extends FragmentStatePagerAdapter {
         private ArrayList<Fragment> fragments = new ArrayList<>();
+
         public WeatherAdapter(FragmentManager fm, int tabCount) {
             super(fm);
         }
@@ -102,6 +141,7 @@ public class HomeFragment extends Fragment implements TabLayout.OnTabSelectedLis
         private void addFragments(Fragment fragment) {
             fragments.add(fragment);
         }
+        private Fragment findFragmentByPosition(int pos) {return fragments.get(pos);}
 
         @Override
         public android.support.v4.app.Fragment getItem(int position) {
@@ -121,4 +161,33 @@ public class HomeFragment extends Fragment implements TabLayout.OnTabSelectedLis
             return fragments.size();
         }
     }
+
+    public void showData(CityWeather cityWeather) {
+        if (cityWeather != null) {
+            if (cityWeather.weather != null && cityWeather.weather.size() > 0) {
+                txtMain.setText(cityWeather.weather.get(0).main);
+                txtDesc.setText(cityWeather.weather.get(0).description);
+            }
+            if (cityWeather.main != null) {
+                txtMax.setText(cityWeather.main.temp_max + "");
+                txtMin.setText(cityWeather.main.temp_min + "");
+                txtPres.setText(cityWeather.main.pressure + "");
+                txtHumi.setText(cityWeather.main.humidity + "");
+            }
+        }
+    }
+
+    public void reDirectPage(Bundle bundle) {
+        if (bundle != null && bundle.containsKey("details_from")) {
+            String details_from = bundle.getString("details_from");
+            if (details_from.equalsIgnoreCase(TomorrowFragment.class.getName())) {
+                ((TomorrowFragment) adapter.findFragmentByPosition(0)).setAdapter(bundle);
+            }else if (details_from.equalsIgnoreCase(DayAfterTommorowFragment.class.getName())){
+                ((DayAfterTommorowFragment) adapter.findFragmentByPosition(1)).showData(bundle);
+            }else if (details_from.equalsIgnoreCase(FutureWeatherFragment.class.getName())){
+                ((FutureWeatherFragment) adapter.findFragmentByPosition(1)).showData(bundle);
+            }
+        }
+    }
+
 }

@@ -29,9 +29,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import atrue.pranesh.creditmantri_weatherapi.ui.Communicator;
+import atrue.pranesh.creditmantri_weatherapi.ui.DayAfterTommorowFragment;
+import atrue.pranesh.creditmantri_weatherapi.ui.FutureWeatherFragment;
 import atrue.pranesh.creditmantri_weatherapi.ui.HomeFragment;
 
-public class MainActivity extends AppCompatActivity implements LocationListener {
+public class MainActivity extends AppCompatActivity implements LocationListener, Communicator {
     private static final String TODO = "";
     FrameLayout frameLayout;
     protected static final int MY_PERMISSIONS_ACCESS_FINE_LOCATION = 1;
@@ -150,6 +153,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         }
         return bestLocation;
     }
+
     private void addFragment() {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -169,6 +173,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
 
     }
+
     @Override
     public void onLocationChanged(Location location) {
         //You had this as int. It is advised to have Lat/Loing as double.
@@ -187,6 +192,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         } catch (NullPointerException e) {
         }
     }
+
     @Override
     public void onProviderEnabled(String provider) {
         Toast.makeText(this, "Enabled new provider " + provider,
@@ -198,5 +204,17 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     public void onProviderDisabled(String provider) {
         Toast.makeText(this, "Disabled provider " + provider,
                 Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void sendData(Bundle bundle) {
+        if (bundle != null) {
+            if (bundle.containsKey("details_from")) {
+                HomeFragment homeFragment = (HomeFragment) getSupportFragmentManager().findFragmentByTag("HomeFragment");
+                if (homeFragment != null && homeFragment.isVisible()) {
+                    homeFragment.reDirectPage(bundle);
+                }
+            }
+        }
     }
 }

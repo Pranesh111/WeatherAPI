@@ -2,6 +2,7 @@ package atrue.pranesh.creditmantri_weatherapi.model;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -9,7 +10,7 @@ import java.util.List;
  * Copyright IMDSTAR Technologies
  */
 
-public class CityWeather {
+public class CityWeather implements Serializable {
 
     @SerializedName("coord")
     public Coord coord;
@@ -36,14 +37,14 @@ public class CityWeather {
     @SerializedName("cod")
     public int cod;
 
-    public static class Coord {
+    public static class Coord implements Serializable {
         @SerializedName("lon")
         public double lon;
         @SerializedName("lat")
         public double lat;
     }
 
-    public static class Weather {
+    public static class Weather  implements Serializable {
         @SerializedName("id")
         public int id;
         @SerializedName("main")
@@ -54,7 +55,7 @@ public class CityWeather {
         public String icon;
     }
 
-    public static class Main {
+    public static class Main implements Serializable {
         @SerializedName("temp")
         public double temp;
         @SerializedName("pressure")
@@ -67,19 +68,19 @@ public class CityWeather {
         public double temp_max;
     }
 
-    public static class Wind {
+    public static class Wind  implements Serializable {
         @SerializedName("speed")
         public double speed;
         @SerializedName("deg")
         public int deg;
     }
 
-    public static class Clouds {
+    public static class Clouds implements Serializable {
         @SerializedName("all")
         public int all;
     }
 
-    public static class Sys {
+    public static class Sys  implements Serializable {
         @SerializedName("type")
         public int type;
         @SerializedName("id")
