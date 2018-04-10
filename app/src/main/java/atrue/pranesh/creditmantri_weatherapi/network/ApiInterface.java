@@ -16,5 +16,11 @@ public interface ApiInterface {
     Call<CityWeather> getWeather(@Query("q") String city, @Query("appid") String appid);
 
     @GET("forecast?&lang=en&mode=json")
-    Call<List<Forecast>> getFutureWeather(@Query("q") String city, @Query("appid") String appid);
+    Call<ResponseBody> getFutureWeather(@Query("q") String city, @Query("appid") String appid);
+
+    @GET("forecast?&lang=en&mode=json")
+    Call<List<Forecast>> getFutureWeather1(@Query("q") String city, @Query("appid") String appid);
+
+    @GET("forecast?&lang=en&mode=json")
+    Call<Forecast> getFutureWeather3(@Query("q") String city, @Query("appid") String appid);
 }

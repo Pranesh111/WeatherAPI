@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import atrue.pranesh.creditmantri_weatherapi.R;
@@ -38,6 +39,8 @@ public class HomeFragment extends Fragment implements TabLayout.OnTabSelectedLis
     TextView txtMain, txtDesc, txtMax, txtMin, txtPres, txtHumi;
     String apiKey;
     String city;
+    TextView textViewmin, textViewmax;
+
 
     @Nullable
     @Override
@@ -59,16 +62,17 @@ public class HomeFragment extends Fragment implements TabLayout.OnTabSelectedLis
         txtMin = view.findViewById(R.id.txtMin);
         txtPres = view.findViewById(R.id.txtPres);
         txtHumi = view.findViewById(R.id.txtHumi);
+        textViewmin = view.findViewById(R.id.textViewmin);
+        textViewmax = view.findViewById(R.id.textViewmax);
 
-
-        tabLayout.addTab(tabLayout.newTab().setText("Today1"));
-        tabLayout.addTab(tabLayout.newTab().setText("Today2"));
+        tabLayout.addTab(tabLayout.newTab().setText("TMRW"));
+        tabLayout.addTab(tabLayout.newTab().setText("DAT"));
         tabLayout.addTab(tabLayout.newTab().setText("Today3"));
 
         tabLayout.addOnTabSelectedListener(this);
         adapter = new WeatherAdapter(getFragmentManager(), tabLayout.getTabCount());
         adapter.addFragments(new TomorrowFragment());
-        adapter.addFragments(new TomorrowFragment());
+        adapter.addFragments(new DayAfterTommorowFragment());
         adapter.addFragments(new FutureWeatherFragment());
 
         viewPager.setAdapter(adapter);
@@ -141,7 +145,10 @@ public class HomeFragment extends Fragment implements TabLayout.OnTabSelectedLis
         private void addFragments(Fragment fragment) {
             fragments.add(fragment);
         }
-        private Fragment findFragmentByPosition(int pos) {return fragments.get(pos);}
+
+        private Fragment findFragmentByPosition(int pos) {
+            return fragments.get(pos);
+        }
 
         @Override
         public android.support.v4.app.Fragment getItem(int position) {
@@ -163,16 +170,27 @@ public class HomeFragment extends Fragment implements TabLayout.OnTabSelectedLis
     }
 
     public void showData(CityWeather cityWeather) {
+        textViewmax.setVisibility(View.VISIBLE);
+        textViewmin.setVisibility(View.VISIBLE);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String tempUnit = prefs.getString("tempKey", "");
         if (cityWeather != null) {
             if (cityWeather.weather != null && cityWeather.weather.size() > 0) {
                 txtMain.setText(cityWeather.weather.get(0).main);
                 txtDesc.setText(cityWeather.weather.get(0).description);
             }
             if (cityWeather.main != null) {
-                txtMax.setText(cityWeather.main.temp_max + "");
-                txtMin.setText(cityWeather.main.temp_min + "");
-                txtPres.setText(cityWeather.main.pressure + "");
-                txtHumi.setText(cityWeather.main.humidity + "");
+                if (!tempUnit.equals("K")) {
+                    txtMax.setText(getDeimalFormat(cityWeather.main.temp_max - 273.15F));
+                    txtMin.setText(getDeimalFormat(cityWeather.main.temp_min - 273.15F));
+                    txtPres.setText(getDeimalFormat(cityWeather.main.pressure - 273.15F));
+                    txtHumi.setText(getDeimalFormat(cityWeather.main.humidity - 273.15F));
+                } else {
+                    txtMax.setText(getDeimalFormat(cityWeather.main.temp_max));
+                    txtMin.setText(getDeimalFormat(cityWeather.main.temp_min));
+                    txtPres.setText(getDeimalFormat(cityWeather.main.pressure));
+                    txtHumi.setText(getDeimalFormat(cityWeather.main.humidity));
+                }
             }
         }
     }
@@ -182,12 +200,15 @@ public class HomeFragment extends Fragment implements TabLayout.OnTabSelectedLis
             String details_from = bundle.getString("details_from");
             if (details_from.equalsIgnoreCase(TomorrowFragment.class.getName())) {
                 ((TomorrowFragment) adapter.findFragmentByPosition(0)).setAdapter(bundle);
-            }else if (details_from.equalsIgnoreCase(DayAfterTommorowFragment.class.getName())){
-                ((DayAfterTommorowFragment) adapter.findFragmentByPosition(1)).showData(bundle);
-            }else if (details_from.equalsIgnoreCase(FutureWeatherFragment.class.getName())){
-                ((FutureWeatherFragment) adapter.findFragmentByPosition(1)).showData(bundle);
+            } else if (details_from.equalsIgnoreCase(DayAfterTommorowFragment.class.getName())) {
+                ((DayAfterTommorowFragment) adapter.findFragmentByPosition(1)).setAdapter(bundle);
+            } else if (details_from.equalsIgnoreCase(FutureWeatherFragment.class.getName())) {
+                ((FutureWeatherFragment) adapter.findFragmentByPosition(2)).setAdapter(bundle);
             }
         }
     }
 
+    public static String getDeimalFormat(double val) {
+        return new DecimalFormat("##.##").format(val);
+    }
 }

@@ -5,7 +5,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
+import java.util.List;
 
+import atrue.pranesh.creditmantri_weatherapi.MainActivity;
 import atrue.pranesh.creditmantri_weatherapi.R;
 
 /**
@@ -15,11 +18,13 @@ import atrue.pranesh.creditmantri_weatherapi.R;
 
 public class TomorrowAdapter<T> extends RecyclerView.Adapter {
     TomorrowHolder tomorrowHolder;
-    private T items;
+    private ArrayList<T> items;
     View.OnClickListener listener;
-    public TomorrowAdapter(T tList,View.OnClickListener listener){
-        this.items=  tList;
+    MainActivity mainActivity;
+    public TomorrowAdapter(List<T> tList, View.OnClickListener listener, MainActivity mainActivity){
+        this.items= (ArrayList<T>) tList;
         this.listener=listener;
+        this.mainActivity=mainActivity;
     }
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -30,11 +35,11 @@ public class TomorrowAdapter<T> extends RecyclerView.Adapter {
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        tomorrowHolder.onBind(items);
+        tomorrowHolder.onBind(items.get(position),mainActivity);
     }
 
     @Override
     public int getItemCount() {
-        return 1;
+        return items.size();
     }
 }

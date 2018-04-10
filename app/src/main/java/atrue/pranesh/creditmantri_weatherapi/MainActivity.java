@@ -1,6 +1,7 @@
 package atrue.pranesh.creditmantri_weatherapi;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -16,11 +17,13 @@ import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
@@ -45,7 +48,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         frameLayout = findViewById(R.id.base_container);
-
+        applyTempToKelvin("Kelvin)");
         initialization();
     }
 
@@ -216,5 +219,49 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 }
             }
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menusetting:
+                showPopUp();
+                break;
+            default:
+                break;
+        }
+        return true;
+    }
+
+    private void showPopUp() {
+        final CharSequence[] items = {" Kelvin "," Celcius "};
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Select Unit");
+        builder.setSingleChoiceItems(items, -1, (dialog, item) -> {
+            switch(item)
+            {
+                case 0:
+                    applyTempToKelvin("K)");
+                    break;
+                case 1:
+                    applyTempToCelcius("C");
+                    break;
+            }
+        });
+        builder.create().show();    }
+
+    private void applyTempToKelvin(String tempUnit) {
+        SharedPreferences sharedPreferences=getSharedPreferences("temp",MODE_PRIVATE);
+        SharedPreferences.Editor editor=sharedPreferences.edit();
+        editor.putString("tempKey",tempUnit);
+        editor.apply();
+    }
+
+
+    private void applyTempToCelcius(String tempUnit) {
+        SharedPreferences sharedPreferences=getSharedPreferences("temp",MODE_PRIVATE);
+        SharedPreferences.Editor editor=sharedPreferences.edit();
+        editor.putString("tempKey",tempUnit);
+        editor.apply();
     }
 }

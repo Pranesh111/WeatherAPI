@@ -1,13 +1,18 @@
 package atrue.pranesh.creditmantri_weatherapi.ui.business;
 
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
+import atrue.pranesh.creditmantri_weatherapi.MainActivity;
 import atrue.pranesh.creditmantri_weatherapi.R;
 import atrue.pranesh.creditmantri_weatherapi.model.CityWeather;
 import atrue.pranesh.creditmantri_weatherapi.model.Forecast;
+
+import static atrue.pranesh.creditmantri_weatherapi.ui.HomeFragment.getDeimalFormat;
 
 /**
  * Created by Adminitrator on 4/10/2018.
@@ -32,17 +37,26 @@ public class TomorrowHolder extends RecyclerView.ViewHolder {
     }
 
 
-    public <T> void onBind(T t) {
+    public <T> void onBind(T t, MainActivity mainActivity) {
         cardView.setOnClickListener(listener);
         cardView.setTag(R.id.cardView, t);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mainActivity);
+        String tempUnit = prefs.getString("tempKey", "");
         if (t != null) {
-            if (t instanceof Forecast) {
-                txtMain.setText(((Forecast) t).list.get(0).weather.get(0).main);
-                txtMain.setText(((Forecast) t).list.get(0).weather.get(0).description);
-                txtMin.setText(((Forecast) t).list.get(0).main.temp_min + "");
-                txtMax.setText(((Forecast) t).list.get(0).main.temp_max + "");
-                txtPres.setText(((Forecast) t).list.get(0).main.pressure + "");
-                txtHumi.setText(((Forecast) t).list.get(0).main.humidity + "");
+            if (t instanceof Forecast.List) {
+                txtMain.setText(((Forecast.List) t).weather.get(0).main);
+                txtMain.setText(((Forecast.List) t).weather.get(0).description);
+                if (!tempUnit.equals("K")) {
+                    txtMin.setText(getDeimalFormat(((Forecast.List) t).main.temp_min - 273.15F));
+                    txtMax.setText(getDeimalFormat(((Forecast.List) t).main.temp_max - 273.15F));
+                    txtPres.setText(getDeimalFormat(((Forecast.List) t).main.pressure - 273.15F));
+                    txtHumi.setText(getDeimalFormat(((Forecast.List) t).main.humidity - 273.15F));
+                } else {
+                    txtMin.setText(getDeimalFormat(((Forecast.List) t).main.temp_min));
+                    txtMax.setText(getDeimalFormat(((Forecast.List) t).main.temp_max));
+                    txtPres.setText(getDeimalFormat(((Forecast.List) t).main.pressure));
+                    txtHumi.setText(getDeimalFormat(((Forecast.List) t).main.humidity));
+                }
             } else {
                 if (t instanceof CityWeather) {
                     if (((CityWeather) t).weather != null && ((CityWeather) t).weather.size() > 0) {
@@ -50,10 +64,19 @@ public class TomorrowHolder extends RecyclerView.ViewHolder {
                         txtDesc.setText(((CityWeather) t).weather.get(0).description);
                     }
                     if (((CityWeather) t).main != null) {
-                        txtMax.setText(((CityWeather) t).main.temp_max + "");
-                        txtMin.setText(((CityWeather) t).main.temp_min+ "");
-                        txtPres.setText(((CityWeather) t).main.pressure + "");
-                        txtHumi.setText(((CityWeather) t).main.humidity + "");
+                        if (!tempUnit.equals("K")) {
+
+                            txtMax.setText(getDeimalFormat(((CityWeather) t).main.temp_max - 273.15F));
+                            txtMin.setText(getDeimalFormat(((CityWeather) t).main.temp_min - 273.15F));
+                            txtPres.setText(getDeimalFormat(((CityWeather) t).main.pressure - 273.15F));
+                            txtHumi.setText(getDeimalFormat(((CityWeather) t).main.humidity - 273.15F));
+                        } else {
+
+                            txtMax.setText(getDeimalFormat(((CityWeather) t).main.temp_max));
+                            txtMin.setText(getDeimalFormat(((CityWeather) t).main.temp_min));
+                            txtPres.setText(((CityWeather) t).main.pressure);
+                            txtHumi.setText(((CityWeather) t).main.humidity);
+                        }
                     }
                 }
             }
