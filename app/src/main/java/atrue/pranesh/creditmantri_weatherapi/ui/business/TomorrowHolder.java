@@ -60,7 +60,7 @@ public class TomorrowHolder extends RecyclerView.ViewHolder {
                     txtHumi.setText(getDeimalFormat(((Forecast.List) t).main.humidity)+" %");
                     txtDate.setText(((Forecast.List) t).dt_txt.split(" ")[0]);
                 } else {
-                    txtMin.setText(getDeimalFormat(((Forecast.List) t).main.temp_min)+ mainActivity.getString(R.string.celcius));
+                    txtMin.setText(getDeimalFormat(((Forecast.List) t).main.temp_min)+ mainActivity.getString(R.string.kelvin));
                     txtMax.setText(getDeimalFormat(((Forecast.List) t).main.temp_max) + mainActivity.getString(R.string.kelvin));
                     txtPres.setText(getDeimalFormat(((Forecast.List) t).main.pressure)+ mainActivity.getString(R.string.pressure_unit_hpa));
                     txtHumi.setText(getDeimalFormat(((Forecast.List) t).main.humidity)+" %");
@@ -83,8 +83,8 @@ public class TomorrowHolder extends RecyclerView.ViewHolder {
                             txtDate.setText(((CityWeather) t).dt);
                         } else {
 
-                            txtMax.setText(getDeimalFormat(((CityWeather) t).main.temp_max)+ mainActivity.getString(R.string.celcius));
-                            txtMin.setText(getDeimalFormat(((CityWeather) t).main.temp_min)+ mainActivity.getString(R.string.celcius));
+                            txtMax.setText(getDeimalFormat(((CityWeather) t).main.temp_max)+ mainActivity.getString(R.string.kelvin));
+                            txtMin.setText(getDeimalFormat(((CityWeather) t).main.temp_min)+ mainActivity.getString(R.string.kelvin));
                             txtPres.setText(((CityWeather) t).main.pressure+ mainActivity.getString(R.string.pressure_unit_hpa));
                             txtHumi.setText(((CityWeather) t).main.humidity+" %");
                             txtDate.setText(((CityWeather) t).dt);
