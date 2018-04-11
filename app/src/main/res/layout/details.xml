@@ -7,7 +7,8 @@
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         app:cardUseCompatPadding="true">
 
         <LinearLayout
@@ -117,4 +118,13 @@
 
 
     </android.support.v7.widget.CardView>
+
+    <Button
+        android:layout_width="match_parent"
+        android:id="@+id/btnShare"
+        android:layout_gravity="bottom"
+        android:textColor="@android:color/white"
+        android:backgroundTint="@color/blue"
+        android:text="@string/Share"
+        android:layout_height="wrap_content" />
 </LinearLayout>

@@ -10,4 +10,5 @@
     <color name="transparent_color3">#30000000</color>
     <color name="transparent_color0">#00000000</color>
     <color name="trans_parent_light">#58262626</color>
+    <color name="blue">#3CA4F1</color>
 </resources>

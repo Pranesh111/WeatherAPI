@@ -30,5 +30,6 @@
     <string name="alert_storage_permission">Location permission needed</string>
     <string name="celcius">\u0020C</string>
     <string name="kelvin">\u0020K</string>
+    <string name="Share">Share</string>
 </resources>
 
