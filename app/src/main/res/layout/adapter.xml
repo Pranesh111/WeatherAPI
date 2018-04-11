@@ -1,13 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="5dp"
     android:orientation="vertical"
-    android:id="@+id/cardView"
+    android:padding="5dp"
     app:cardUseCompatPadding="true">
 
     <include layout="@layout/weather" />
+
+    <TextView
+        android:id="@+id/txtDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right|bottom"
+        android:padding="@dimen/dp_2"
+        android:textSize="@dimen/small_text"
+        android:textStyle="italic" />
 </android.support.v7.widget.CardView>
 

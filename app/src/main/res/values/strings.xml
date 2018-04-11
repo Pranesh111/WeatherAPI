@@ -28,5 +28,7 @@
     <string name="min">MIN:\u0020</string>
     <string name="max">MAX:\u0020</string>
     <string name="alert_storage_permission">Location permission needed</string>
+    <string name="celcius">\u0020C</string>
+    <string name="kelvin">\u0020K</string>
 </resources>
 

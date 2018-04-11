@@ -214,10 +214,15 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     }
 
     private void addFragment() {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.base_container, new HomeFragment(), "HomeFragment");
-        fragmentTransaction.commit();
+        try{
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.base_container, new HomeFragment(), "HomeFragment");
+            fragmentTransaction.commit();
+        }
+        catch(IllegalStateException  e){
+            e.printStackTrace();
+        }
     }
 
     private void saveLocation(String city) {

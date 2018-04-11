@@ -1,6 +1,7 @@
 package atrue.pranesh.creditmantri_weatherapi.ui;
 
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -96,7 +97,6 @@ public class HomeFragment extends Fragment implements TabLayout.OnTabSelectedLis
     }
 
 
-
     private void callTodayReport() {
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
         Call<CityWeather> weatherCall = apiInterface.getWeather(city, apiKey);
@@ -157,9 +157,9 @@ public class HomeFragment extends Fragment implements TabLayout.OnTabSelectedLis
     }
 
     private void showDetailsPage() {
-        if (getActivity() !=null){
+        if (getActivity() != null) {
             Intent intent = new Intent(getActivity(), HomeDetailActivity.class);
-            intent.putExtra("details",  cityWaether);
+            intent.putExtra("details", cityWaether);
             startActivity(intent);
         }
     }
@@ -198,6 +198,7 @@ public class HomeFragment extends Fragment implements TabLayout.OnTabSelectedLis
         }
     }
 
+    @SuppressLint("SetTextI18n")
     public void showData(CityWeather cityWeather) {
         this.cityWaether = cityWeather;
         textViewmax.setVisibility(View.VISIBLE);
@@ -212,15 +213,15 @@ public class HomeFragment extends Fragment implements TabLayout.OnTabSelectedLis
             }
             if (cityWeather.main != null) {
                 if (!tempUnit.equals("K")) {
-                    txtMax.setText(getDeimalFormat(cityWeather.main.temp_max - 273.15F));
-                    txtMin.setText(getDeimalFormat(cityWeather.main.temp_min - 273.15F));
-                    txtPres.setText(getDeimalFormat(cityWeather.main.pressure - 273.15F));
-                    txtHumi.setText(getDeimalFormat(cityWeather.main.humidity - 273.15F));
+                    txtMax.setText(getDeimalFormat(cityWeather.main.temp_max - 273.15F) + getString(R.string.celcius));
+                    txtMin.setText(getDeimalFormat(cityWeather.main.temp_min - 273.15F) + getString(R.string.celcius));
+                    txtPres.setText(getDeimalFormat(cityWeather.main.pressure) + getString(R.string.pressure_unit_hpa));
+                    txtHumi.setText(getDeimalFormat(cityWeather.main.humidity)+" %");
                 } else {
-                    txtMax.setText(getDeimalFormat(cityWeather.main.temp_max));
-                    txtMin.setText(getDeimalFormat(cityWeather.main.temp_min));
-                    txtPres.setText(getDeimalFormat(cityWeather.main.pressure));
-                    txtHumi.setText(getDeimalFormat(cityWeather.main.humidity));
+                    txtMax.setText(getDeimalFormat(cityWeather.main.temp_max) + getString(R.string.kelvin));
+                    txtMin.setText(getDeimalFormat(cityWeather.main.temp_min) + getString(R.string.kelvin));
+                    txtPres.setText(getDeimalFormat(cityWeather.main.pressure)+ getString(R.string.pressure_unit_hpa));
+                    txtHumi.setText(getDeimalFormat(cityWeather.main.humidity)+" %");
                 }
             }
         }
