@@ -61,7 +61,7 @@ public class TomorrowFragment extends Fragment implements View.OnClickListener {
     List<Forecast.List> dayAfterTmrwList;
     List<Forecast.List> tfutureList;
     private List<Forecast.List> tommorwLists;
-
+    private boolean isViewShown = false;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -80,6 +80,11 @@ public class TomorrowFragment extends Fragment implements View.OnClickListener {
         apiKey = sp.getString("apiKey", getActivity().getResources().getString(R.string.apiKey));
         city = sp.getString("city", "Mumbai");
         callForeCast();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
     }
 
     private void callForeCast() {
@@ -215,4 +220,16 @@ public class TomorrowFragment extends Fragment implements View.OnClickListener {
     public void onClick(View view) {
 
     }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (getView() != null) {
+            isViewShown = true;
+            callForeCast();
+        } else {
+            isViewShown = false;
+        }
+    }
+
 }

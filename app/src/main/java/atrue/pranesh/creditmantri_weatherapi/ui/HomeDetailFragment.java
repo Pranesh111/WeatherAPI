@@ -54,4 +54,6 @@ public class HomeDetailFragment extends Fragment {
         txtSunrise.setText(timeFormat.format(cityWeather.sys.sunrise));
         txtSunset.setText(timeFormat.format(cityWeather.sys.sunset));
     }
+
+
 }

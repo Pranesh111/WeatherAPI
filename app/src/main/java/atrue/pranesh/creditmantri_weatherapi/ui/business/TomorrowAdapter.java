@@ -40,6 +40,8 @@ public class TomorrowAdapter<T> extends RecyclerView.Adapter {
 
     @Override
     public int getItemCount() {
+        if(items!=null)
         return items.size();
+        return 0;
     }
 }

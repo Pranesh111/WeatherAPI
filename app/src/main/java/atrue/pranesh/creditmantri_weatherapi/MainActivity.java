@@ -509,6 +509,15 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
         return location;
     }
-
+    /*@Override
+    public void onBackPressed() {
+        HomeFragment homeFragment = (HomeFragment) getSupportFragmentManager().findFragmentByTag("HomeFragment");
+        if (homeFragment != null && homeFragment.isVisible()) {
+            FragmentManager fm = homeFragment.getChildFragmentManager();
+            if (fm.getBackStackEntryCount() > 0) {
+                fm.popBackStack();
+            }
+        }
+    }*/
 
 }
