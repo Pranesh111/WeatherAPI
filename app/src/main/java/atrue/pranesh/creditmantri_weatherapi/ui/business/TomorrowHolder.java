@@ -10,6 +10,8 @@ import android.widget.TextView;
 
 import atrue.pranesh.creditmantri_weatherapi.MainActivity;
 import atrue.pranesh.creditmantri_weatherapi.R;
+import atrue.pranesh.creditmantri_weatherapi.helper.PreferenceKeys;
+import atrue.pranesh.creditmantri_weatherapi.helper.PreferencesCredit;
 import atrue.pranesh.creditmantri_weatherapi.model.CityWeather;
 import atrue.pranesh.creditmantri_weatherapi.model.Forecast;
 
@@ -41,8 +43,7 @@ public class TomorrowHolder extends RecyclerView.ViewHolder {
     public <T> void onBind(T t, MainActivity mainActivity) {
         cardView.setOnClickListener(listener);
         cardView.setTag(R.id.cardView, t);
-        SharedPreferences prefs = mainActivity.getSharedPreferences("temp", Context.MODE_PRIVATE);
-        String tempUnit = prefs.getString("tempKey", "");
+        String tempUnit = PreferencesCredit.getStringValue(mainActivity, PreferenceKeys.key_temp);
         if (t != null) {
             if (t instanceof Forecast.List) {
                 txtMain.setText(((Forecast.List) t).weather.get(0).main);

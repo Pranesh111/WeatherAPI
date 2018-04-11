@@ -19,6 +19,7 @@ import android.net.Uri;
 import android.net.wifi.WifiConfiguration;
 import android.os.Build;
 import android.os.Handler;
+import android.os.PersistableBundle;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -177,6 +178,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     private void setHomeFragment() {
         try {
             getCityName();
+            addFragment();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -243,7 +245,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             if (address.size() > 0) {
                 city = address.get(0).getLocality();
                 saveLocation(city);
-                addFragment();
             }
         } catch (IOException e) {
         } catch (NullPointerException e) {
@@ -308,7 +309,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             }
         });
         builder.setPositiveButton("Ok", (dialogInterface, i) -> {
-          recreate();
+            finish();
+            startActivity(new Intent(this, MainActivity.class));
+            overridePendingTransition(android.R.anim.fade_in,
+                    android.R.anim.fade_out);
         });
         builder.create().show();
     }
@@ -509,15 +513,5 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
         return location;
     }
-    /*@Override
-    public void onBackPressed() {
-        HomeFragment homeFragment = (HomeFragment) getSupportFragmentManager().findFragmentByTag("HomeFragment");
-        if (homeFragment != null && homeFragment.isVisible()) {
-            FragmentManager fm = homeFragment.getChildFragmentManager();
-            if (fm.getBackStackEntryCount() > 0) {
-                fm.popBackStack();
-            }
-        }
-    }*/
 
 }
