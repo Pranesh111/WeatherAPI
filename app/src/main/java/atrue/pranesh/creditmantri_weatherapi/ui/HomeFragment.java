@@ -2,6 +2,7 @@ package atrue.pranesh.creditmantri_weatherapi.ui;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -78,7 +79,7 @@ public class HomeFragment extends Fragment implements TabLayout.OnTabSelectedLis
         tabLayout.addTab(tabLayout.newTab().setText("Later"));
 
         tabLayout.addOnTabSelectedListener(this);
-        adapter = new WeatherAdapter(getFragmentManager(), tabLayout.getTabCount());
+        adapter = new WeatherAdapter(getChildFragmentManager(), tabLayout.getTabCount());
         adapter.addFragments(new TomorrowFragment());
         adapter.addFragments(new DayAfterTommorowFragment());
         adapter.addFragments(new FutureWeatherFragment());
@@ -156,16 +157,11 @@ public class HomeFragment extends Fragment implements TabLayout.OnTabSelectedLis
     }
 
     private void showDetailsPage() {
-        HomeDetailFragment homeDetailFragment = new HomeDetailFragment();
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("details",  cityWaether);
-        homeDetailFragment.setArguments(bundle);
-
-        FragmentManager fragmentManager = getFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.base_container,homeDetailFragment, "HomeDetailsFragment").
-                addToBackStack("HomeDetailsFragment").setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-        fragmentTransaction.commit();
+        if (getActivity() !=null){
+            Intent intent = new Intent(getActivity(), HomeDetailActivity.class);
+            intent.putExtra("details",  cityWaether);
+            startActivity(intent);
+        }
     }
 
     private class WeatherAdapter extends FragmentStatePagerAdapter {

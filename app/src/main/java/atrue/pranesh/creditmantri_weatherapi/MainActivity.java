@@ -371,7 +371,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             final LocationSettingsStates state = result1.getLocationSettingsStates();
             switch (status.getStatusCode()) {
                 case LocationSettingsStatusCodes.SUCCESS:
-                    applyTemp("K");
+                   // applyTemp("K");
                     initialization();
                     break;
                 case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
@@ -394,7 +394,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             case REQUEST_CHECK_SETTINGS:
                 switch (resultCode) {
                     case RESULT_OK:
-                        applyTemp("K");
+                    //    applyTemp("K");
                         initialization();
                         break;
                     case RESULT_CANCELED:
@@ -430,7 +430,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
                 if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                     Log.e("About GPS", "GPS is Enabled in your device");
-                    applyTemp("K");
+                   // applyTemp("K");
                     initialization();
                 } else {
                     new Handler().postDelayed(sendUpdatesToUI, 10);
