@@ -1,5 +1,6 @@
 package atrue.pranesh.creditmantri_weatherapi.ui.business;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.v7.widget.CardView;
@@ -40,7 +41,7 @@ public class TomorrowHolder extends RecyclerView.ViewHolder {
     public <T> void onBind(T t, MainActivity mainActivity) {
         cardView.setOnClickListener(listener);
         cardView.setTag(R.id.cardView, t);
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mainActivity);
+        SharedPreferences prefs = mainActivity.getSharedPreferences("temp", Context.MODE_PRIVATE);
         String tempUnit = prefs.getString("tempKey", "");
         if (t != null) {
             if (t instanceof Forecast.List) {

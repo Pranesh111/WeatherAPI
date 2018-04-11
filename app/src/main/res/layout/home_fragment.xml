@@ -25,6 +25,7 @@
             <!--<include layout="@layout/weather" />-->
             <LinearLayout
                 android:layout_width="match_parent"
+                android:id="@+id/lnrDetails"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 

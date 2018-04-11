@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -89,38 +90,44 @@ public class TomorrowFragment extends Fragment implements View.OnClickListener {
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 StringBuilder stringBuilder = new StringBuilder();
                 String line;
-                InputStream inputStream = response.body().byteStream();
-                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+                if(response.body()!=null){
+                    InputStream inputStream = response.body().byteStream();
+                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
 
-                try {
-                    while ((line = bufferedReader.readLine()) != null) {
-                        stringBuilder.append(line);
-                        stringBuilder.append("\r\n");
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                String jsonResponse;
-                try {
-                    JSONObject jsonObject = new JSONObject(stringBuilder.toString());
-                    if (jsonObject.has("cod")) {
-                        String code = jsonObject.getString("cod");
-                        if (code.equals("200")) {
-                            if (jsonObject.has("list")) {
-                                jsonResponse = jsonObject.getJSONArray("list").toString();
-                                Gson gson = new Gson();
-                                List<Forecast.List> foreCastLst = Arrays.asList(gson.fromJson(jsonResponse, Forecast.List[].class));
-                                getTmrwList(foreCastLst);
-                                setTomorrowAdapter(tmrwList);
-                                setDayAfterTomorrowAdapter(dayAfterTmrwList);
-                                setFutureAdater(tfutureList);
-                            }
+                    try {
+                        while ((line = bufferedReader.readLine()) != null) {
+                            stringBuilder.append(line);
+                            stringBuilder.append("\r\n");
                         }
-
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                    String jsonResponse;
+                    try {
+                        JSONObject jsonObject = new JSONObject(stringBuilder.toString());
+                        if (jsonObject.has("cod")) {
+                            String code = jsonObject.getString("cod");
+                            if (code.equals("200")) {
+                                if (jsonObject.has("list")) {
+                                    jsonResponse = jsonObject.getJSONArray("list").toString();
+                                    Gson gson = new Gson();
+                                    List<Forecast.List> foreCastLst = Arrays.asList(gson.fromJson(jsonResponse, Forecast.List[].class));
+                                    getTmrwList(foreCastLst);
+                                    setTomorrowAdapter(tmrwList);
+                                    setDayAfterTomorrowAdapter(dayAfterTmrwList);
+                                    setFutureAdater(tfutureList);
+                                }
+                            }
+
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
+                else{
+                    Toast.makeText(getActivity(),"City not found",Toast.LENGTH_SHORT).show();
+                }
+
             }
 
             @Override

@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
@@ -14,16 +15,21 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import atrue.pranesh.creditmantri_weatherapi.R;
+import atrue.pranesh.creditmantri_weatherapi.helper.PreferenceKeys;
+import atrue.pranesh.creditmantri_weatherapi.helper.PreferencesCredit;
 import atrue.pranesh.creditmantri_weatherapi.model.CityWeather;
 import atrue.pranesh.creditmantri_weatherapi.network.ApiClient;
 import atrue.pranesh.creditmantri_weatherapi.network.ApiInterface;
@@ -31,7 +37,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class HomeFragment extends Fragment implements TabLayout.OnTabSelectedListener {
+public class HomeFragment extends Fragment implements TabLayout.OnTabSelectedListener, View.OnClickListener {
     ViewPager viewPager;
     TabLayout tabLayout;
     CoordinatorLayout coordinatorLayout;
@@ -40,7 +46,8 @@ public class HomeFragment extends Fragment implements TabLayout.OnTabSelectedLis
     String apiKey;
     String city;
     TextView textViewmin, textViewmax;
-
+    LinearLayout linearLayout;
+    public CityWeather cityWaether;
 
     @Nullable
     @Override
@@ -55,6 +62,7 @@ public class HomeFragment extends Fragment implements TabLayout.OnTabSelectedLis
         coordinatorLayout = view.findViewById(R.id.coordinatorLayout);
         viewPager = view.findViewById(R.id.viewPager);
         tabLayout = view.findViewById(R.id.tabLayout);
+        linearLayout = view.findViewById(R.id.lnrDetails);
 
         txtMain = view.findViewById(R.id.txtMain);
         txtDesc = view.findViewById(R.id.txtDesc);
@@ -64,10 +72,10 @@ public class HomeFragment extends Fragment implements TabLayout.OnTabSelectedLis
         txtHumi = view.findViewById(R.id.txtHumi);
         textViewmin = view.findViewById(R.id.textViewmin);
         textViewmax = view.findViewById(R.id.textViewmax);
-
-        tabLayout.addTab(tabLayout.newTab().setText("TMRW"));
-        tabLayout.addTab(tabLayout.newTab().setText("DAT"));
-        tabLayout.addTab(tabLayout.newTab().setText("Today3"));
+        linearLayout.setOnClickListener(this);
+        tabLayout.addTab(tabLayout.newTab().setText("Tomorrow"));
+        tabLayout.addTab(tabLayout.newTab().setText("Day After Tomorrow"));
+        tabLayout.addTab(tabLayout.newTab().setText("Later"));
 
         tabLayout.addOnTabSelectedListener(this);
         adapter = new WeatherAdapter(getFragmentManager(), tabLayout.getTabCount());
@@ -83,12 +91,17 @@ public class HomeFragment extends Fragment implements TabLayout.OnTabSelectedLis
         city = sp.getString("city", "Mumbai");
 
         callTodayReport();
+
     }
+
+
 
     private void callTodayReport() {
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
         Call<CityWeather> weatherCall = apiInterface.getWeather(city, apiKey);
         weatherCall.enqueue(new Callback<CityWeather>() {
+
+
             @Override
             public void onResponse(Call<CityWeather> call, Response<CityWeather> response) {
                 CityWeather cityWeather = response.body();
@@ -135,6 +148,26 @@ public class HomeFragment extends Fragment implements TabLayout.OnTabSelectedLis
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
+    @Override
+    public void onClick(View view) {
+        if (view.getId() == R.id.lnrDetails) {
+            showDetailsPage();
+        }
+    }
+
+    private void showDetailsPage() {
+        HomeDetailFragment homeDetailFragment = new HomeDetailFragment();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("details",  cityWaether);
+        homeDetailFragment.setArguments(bundle);
+
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.base_container,homeDetailFragment, "HomeDetailsFragment").
+                addToBackStack("HomeDetailsFragment").setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+        fragmentTransaction.commit();
+    }
+
     private class WeatherAdapter extends FragmentStatePagerAdapter {
         private ArrayList<Fragment> fragments = new ArrayList<>();
 
@@ -170,10 +203,12 @@ public class HomeFragment extends Fragment implements TabLayout.OnTabSelectedLis
     }
 
     public void showData(CityWeather cityWeather) {
+        this.cityWaether = cityWeather;
         textViewmax.setVisibility(View.VISIBLE);
         textViewmin.setVisibility(View.VISIBLE);
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        String tempUnit = prefs.getString("tempKey", "");
+
+        String tempUnit = PreferencesCredit.getStringValue(getContext(), PreferenceKeys.key_temp);
+
         if (cityWeather != null) {
             if (cityWeather.weather != null && cityWeather.weather.size() > 0) {
                 txtMain.setText(cityWeather.weather.get(0).main);
